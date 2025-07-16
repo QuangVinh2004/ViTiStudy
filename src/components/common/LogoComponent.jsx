@@ -4,7 +4,7 @@ const LogoComponent = ({
     className = "",
 }) => {
     return (
-        <div className={`flex items-center ${className}`}>
+        <div className={`flex items-center h-[55px] ${className}`}>
             <img
                 src={logoweb}
                 alt="Logo"

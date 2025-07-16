@@ -6,7 +6,7 @@ import LogoComponent from "./common/LogoComponent";
 function Header() {
     return (
         <header>
-            <div className="flex items-center justify-between px-6 py-4 ">
+            <div className="flex items-center justify-between px-[100px] py-4 ">
                 <LogoComponent className="w-[200px]" />
 
                 <InputComponent
@@ -16,7 +16,7 @@ function Header() {
                 />
                 {
                     <div>
-                        <ButtonComponent text="Đăng kí" type="link" href="#" textColor="text-blue-600" className="mx-4 font-medium"/>
+                        <ButtonComponent text="Đăng ký" type="link" href="#" textColor="text-blue-600" className="mx-4 font-medium"/>
                         <ButtonComponent text="Đăng nhập" onClick={() => { console.log("Dang nhap clicked"); }} />
                     </div>
                 }

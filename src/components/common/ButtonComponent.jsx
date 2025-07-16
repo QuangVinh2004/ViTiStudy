@@ -5,7 +5,7 @@ const ButtonComponent = ({
     text,
     onClick,
     href = "#",
-    bgColor = "bg-amber-500",
+    bgColor = "bg-sky-300",
     textColor = "text-black",
     leftIcon,
     rightIcon,
