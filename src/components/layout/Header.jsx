@@ -2,10 +2,12 @@ import RegisterModal from "../../pages/RegisterModal";
 import LoginModal from "../../pages/LoginModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { ButtonComponent, InputComponent } from "./common";
-import LogoComponent from "./common/LogoComponent";
+import { ButtonComponent, InputComponent } from "../common";
+import LogoComponent from "../common/LogoComponent";
+import  { useState } from 'react';
+
 function Header() {
-    const [showModal, setShowModal] = useState(false);
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     return (
 
@@ -20,8 +22,8 @@ function Header() {
                 />
                 {
                     <div>
-                        <ButtonComponent onClick={()=>setShowModal(true)} text="Đăng ký" type="link" href="#" textColor="text-blue-600" className="mx-4 font-medium"/>
-                        {showModal && <RegisterModal onClose={() => setShowModal(false)} />}
+                        <ButtonComponent onClick={()=>setShowRegisterModal(true)} text="Đăng ký"  textColor="text-blue-600" bgColor="none" className="mx-4 font-medium boder-none"/>
+                        {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
                         <ButtonComponent text="Đăng nhập" onClick={()=>setShowLoginModal(true)} />
                         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
                     </div>

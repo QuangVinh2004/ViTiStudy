@@ -1,4 +1,4 @@
-import { TextComponent } from "./common";
+import { TextComponent } from "../common";
 
 const Footer = () => {
   return (

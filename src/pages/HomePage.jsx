@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { CardComponent, SlideComponent, ListItemLayout } from "../components/layouts";
@@ -19,8 +18,9 @@ function HomePage() {
   ];
 
   return (
+    
 <div className="px-[100px] py-3">
-
+      <Header />
       <SlideComponent>
         {slides.map((slide, index) => (
           <div
@@ -64,6 +64,7 @@ function HomePage() {
       </ListItemLayout>
 
       <TitleComponent text="Giáo viên nổi bật"/>
+      <Footer />
     </div>
     
   );

@@ -1,3 +1,4 @@
+import LogoComponent from "../components/common/LogoComponent";
 function RegisterModal({ onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
@@ -10,11 +11,7 @@ function RegisterModal({ onClose }) {
         </button>
 
         <div className="flex justify-center mb-4">
-          <img
-            src="https://accounts.fullstack.edu.vn/assets/logo-lV2rGpF0.png"
-            alt="Logo"
-            className="w-16 h-16 object-cover"
-          />
+          <LogoComponent className="w-44  object-cover"/>
         </div>
         <form className="flex flex-col gap-4">
 
@@ -53,8 +50,8 @@ function RegisterModal({ onClose }) {
           </div>
 
           <div className="flex flex-col items-center justify-between my-4">
-            <p className="text-sm">Bạn đã có tài khoản? <a href="#" className="text-sm text-red-500 underline font-medium">Đăng nhập</a></p>
-            <a href="" className="text-sm text-red-500 underline font-medium">Quên mật khẩu?</a>
+            <p className="text-sm">Bạn đã có tài khoản? <a href="/login" className="text-sm text-red-500 underline font-medium">Đăng nhập</a></p>
+            <a href="/forgot-password" className="text-sm text-red-500 underline font-medium">Quên mật khẩu?</a>
             <p className="text-center text-sm">Việc bạn tiếp tục trang web này đồng nghĩa bạn đồng ý với điều khoản sử dụng của chúng tôi.</p>
           </div>
         </form>

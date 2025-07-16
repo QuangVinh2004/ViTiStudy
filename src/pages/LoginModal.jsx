@@ -1,3 +1,4 @@
+import LogoComponent from "../components/common/LogoComponent";
 function LoginModal({ onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
@@ -10,11 +11,7 @@ function LoginModal({ onClose }) {
         </button>
 
         <div className="flex justify-center mb-4">
-          <img
-            src="https://accounts.fullstack.edu.vn/assets/logo-lV2rGpF0.png"
-            alt="Logo"
-            className="w-16 h-16 object-cover"
-          />
+          <LogoComponent className="w-44  object-cover"/>
         </div>
         <form className="flex flex-col gap-4">
 
