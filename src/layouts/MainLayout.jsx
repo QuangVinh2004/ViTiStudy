@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 const MainLayout = () => {
   return (
     <>
-      <div className="mx-4">
+      <div className="mx-20">
         <Header />
         <Outlet />
         <Footer />
