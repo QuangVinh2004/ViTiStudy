@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import { CardComponent, SlideComponent, ListItemLayout } from "../components/layouts";
+import { TitleComponent } from "../components/common";
 
 function HomePage() {
   const slides = [
     {
-      title: "F8 trên Youtube",
-      desc: "F8 được nhắc tới ở mọi nơi, ở đâu có cơ hội việc làm cho nghề IT và có những con người yêu thích lập trình F8 sẽ ở đó.",
+      title: "Kèo nhà cái tại fb88",
+      desc: "Fb88 được nhắc tới ở mọi nơi, ở đâu có cơ hội việc làm cho nghề IT và có những con người yêu thích lập trình F8 sẽ ở đó.",
       bg: "from-pink-500 to-orange-400",
     },
     {
@@ -16,69 +18,52 @@ function HomePage() {
     },
   ];
 
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
   return (
-    <div>
-      <Header />
-      <div className="p-4">
-        {/* Banner Slider */}
-        <div className="relative w-full overflow-hidden rounded-xl shadow-lg h-[250px]">
+<div className="px-[100px] py-3">
+
+      <SlideComponent>
+        {slides.map((slide, index) => (
           <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${current * 100}%)` }}
+            key={index}
+            className={`flex items-center overflow-hidden rounded-xl shadow-lg justify-center h-[400px] bg-gradient-to-r ${slide.bg} text-white`}
           >
-            {slides.map((slide, index) => (
-              <div
-                key={index}
-                className={`flex-shrink-0 w-full h-[250px] flex justify-between items-center px-10 bg-gradient-to-r ${slide.bg} text-white`}
-              >
-                <div className="max-w-xl">
-                  <h2 className="text-3xl font-bold mb-2">{slide.title}</h2>
-                  <p className="mb-4">{slide.desc}</p>
-                  <button className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black transition">
-                    ĐĂNG KÝ KÊNH
-                  </button>
-                </div>
-                {/* <img src={slide.img} alt="slide" className="h-40 rounded-md" /> */}
-              </div>
-            ))}
+            <div className="text-center max-w-2xl">
+              <h1 className="text-4xl font-bold mb-4">{slide.title}</h1>
+              <p className="mb-6">{slide.desc}</p>
+              <button className="border border-white px-6 py-3 rounded hover:bg-white hover:text-black transition">
+                Xem thêm
+              </button>
+            </div>
           </div>
+        ))}
+      </SlideComponent>
 
-          {/* Nút chuyển */}
-          <button
-            onClick={() => setCurrent((current - 1 + slides.length) % slides.length)}
-            className="absolute top-1/2 left-2 -translate-y-1/2 bg-white text-black p-2 rounded-full shadow"
-          >
-            &#8592;
-          </button>
-          <button
-            onClick={() => setCurrent((current + 1) % slides.length)}
-            className="absolute top-1/2 right-2 -translate-y-1/2 bg-white text-black p-2 rounded-full shadow"
-          >
-            &#8594;
-          </button>
+      <TitleComponent text="Khóa học của tôi."/>
 
-          {/* Dấu chấm */}
-          <div className="absolute bottom-2 w-full flex justify-center gap-2">
-            {slides.map((_, idx) => (
-              <div
-                key={idx}
-                className={`w-3 h-3 rounded-full ${idx === current ? "bg-white" : "bg-gray-300"
-                  }`}
-              />
-            ))}
-          </div>
-        </div>
+      <ListItemLayout>
+        <CardComponent type="simple" title="GOAT Lionel Messi" description="Cầu thủ vĩ đại nhất làng túc cầu." imageUrl="https://img4.thuthuatphanmem.vn/uploads/2020/12/25/anh-messi-trong-mon-bong-da_105532690.jpg" rating={4}/>
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+      </ListItemLayout>
 
-      </div>
-      <Footer />
+      <TitleComponent text="Gợi ý khóa học"/>
+
+      <ListItemLayout>
+        <CardComponent 
+          type="detail" 
+          title="GOAT Lionel Messi" 
+          description="Cầu thủ vĩ đại nhất làng túc cầu." 
+          imageUrl="https://img4.thuthuatphanmem.vn/uploads/2020/12/25/anh-messi-trong-mon-bong-da_105532690.jpg" 
+          rating={4} 
+          teacherImage="https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2022/12/20/base64-16715047461231280255424.png"
+          teacherName="Thầy Ông Nậu"
+          lessonCount={10}
+          price={20000000}
+          onClick={() => console.log("Messi is goat")}
+        />
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+      </ListItemLayout>
+
+      <TitleComponent text="Giáo viên nổi bật"/>
     </div>
     
   );

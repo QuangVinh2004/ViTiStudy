@@ -1,11 +1,13 @@
+import { TextComponent } from "./common";
+
 const Footer = () => {
   return (
     <footer className="mt-20">
       <div className="flex flex-row ">
         <div className="ml-16 basis-3/5">
           <div className="ml-24">
-            <h2 className="text-6xl font-medium font-serif ">join our tribe</h2>
-            <p className="font-medium mt-7">subscribe to our mailing list</p>
+            <TextComponent text="Follow us on" title fontSize="35px"/>
+            <TextComponent text="subscribe to our mailing list" title/>
             <form className="flex mt-5">
               <input type="email"
                 placeholder="Email Address"
