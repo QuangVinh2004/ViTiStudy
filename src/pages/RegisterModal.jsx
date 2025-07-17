@@ -7,7 +7,7 @@ function RegisterModal({ onClose }) {
           className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-xm leading-none"
           onClick={onClose}
         >
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark"></i> 
         </button>
 
         <div className="flex justify-center mb-4">

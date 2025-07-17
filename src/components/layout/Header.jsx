@@ -22,7 +22,7 @@ function Header() {
                 />
                 {
                     <div>
-                        <ButtonComponent onClick={()=>setShowRegisterModal(true)} text="Đăng ký"  textColor="text-blue-600" bgColor="none" className="mx-4 font-medium boder-none"/>
+                        <ButtonComponent onClick={()=>setShowRegisterModal(true)} text="Đăng ký"  textColor="text-blue-600" bgColor="bg-transparent" className="mx-4 font-medium border-none hover:bg-transparent"/>
                         {showRegisterModal && <RegisterModal onClose={() => setShowRegisterModal(false)} />}
                         <ButtonComponent text="Đăng nhập" onClick={()=>setShowLoginModal(true)} />
                         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
