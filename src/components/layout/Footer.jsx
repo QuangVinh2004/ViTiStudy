@@ -1,77 +1,54 @@
-import { TextComponent } from "../common";
-
 const Footer = () => {
   return (
-    <footer className="mt-20">
-      <div className="flex flex-row ">
-        <div className="ml-16 basis-3/5">
-          <div className="ml-24">
-            <TextComponent text="Follow us on" title fontSize="35px"/>
-            <TextComponent text="subscribe to our mailing list" title/>
-            <form className="flex mt-5">
-              <input type="email"
-                placeholder="Email Address"
-                className="border-b border-black focus:outline-none text-sm"
-              />
-              <button
-                type="submit"
-                className="border border-black px-5 py-2 ml-5 uppercase text-sm hover:bg-black hover:text-white "
-              >
-                Sign Up
-              </button>
-            </form>
-          </div>
+    <footer className="bg-gray-900 text-white py-10 mt-20">
+      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
 
-          <div className="grid grid-cols-3 gap-0 mt-10">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3FfxOT6emfZzgN8uPDhdFN_QXLDIyEmLfuQ&s"
-              alt=""
-              className="w-[200px]  h-[200px]  object-cover "
-            />
-            <img src="https://giasuhanoigioi.edu.vn/wp-content/uploads/2019/08/cach-hoc-gioi-van-3.jpg"
-              alt=""
-              className="w-[200px] h-[200px]  object-cover "
-            />
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwCuQmHvQ0osCwNfvYL3nuZSbnRqKGW3LnJw&s" alt=""
-              className="w-[200px] h-[200px] object-cover "
-            />
-            
-            <div className="col-start-2 row-start-2 flex justify-center mt-4">
-              <button className="bg-yellow-600 text-white px-5 py-2 hover:bg-yellow-400 text-sm">
-                Load More
-              </button>
-            </div>
-          </div>
-
+        {/* Useful Links */}
+        <div className="flex flex-col items-center">
+          <h2 className="text-lg font-semibold mb-4">USEFUL LINKS</h2>
+          <ul className="space-y-2">
+            <li><a href="/about" className="hover:text-gray-400 text-center block">About</a></li>
+            <li><a href="/services" className="hover:text-gray-400 text-center block">Services</a></li>
+            <li><a href="/contact" className="hover:text-gray-400 text-center block">Contact</a></li>
+            <li><a href="/shop" className="hover:text-gray-400 text-center block">Shop</a></li>
+            <li><a href="/blog" className="hover:text-gray-400 text-center block">Blog</a></li>
+          </ul>
         </div>
-        <div className="basis-2/5 flex flex-row items-center">
-          <div className="mr-20">
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">Shop</span>
-            </p>
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">About</span>
-            </p>
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">Contact</span>
-            </p>
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">Lookbook</span>
-            </p>
-          </div>
-          <div>
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">Shipping & Returns</span>
-            </p>
-            <p>
-              <span className="text-2xl font-medium font-serif mb-3">Paying Methods</span>
-            </p>
+
+
+        {/* Newsletter */}
+        <div className="flex flex-col items-center">
+          <h2 className="text-lg font-semibold mb-4 text-center">NEWSLETTER</h2>
+          <input
+            type="email"
+            placeholder="Your Email Address"
+            className="w-full max-w-xs px-4 py-2 rounded-md text-black"
+          />
+          <button className="mt-4 px-6 py-2 border border-white rounded-full hover:bg-white hover:text-black transition">
+            SUBSCRIBE NOW
+          </button>
+        </div>
+
+
+        {/* Contact Info */}
+        <div className="flex flex-col items-center text-center">
+          <h2 className="text-lg font-semibold mb-4">CONTACT</h2>
+          <p className="mb-4">
+            123, XYZ Road, 0603<br />
+            Bengaluru, Karnataka, IN
+          </p>
+          <div className="flex justify-center space-x-4 text-xl">
+            <a href="/FB" className="hover:text-gray-400"><i className="fa-brands fa-facebook"></i></a>
+            <a href="/TW" className="hover:text-gray-400"><i className="fa-brands fa-square-twitter"></i></a>
+            <a href="/IG" className="hover:text-gray-400"><i className="fa-brands fa-instagram"></i></a>
+            <a href="/PT" className="hover:text-gray-400"><i className="fa-brands fa-pinterest"></i></a>
           </div>
         </div>
+
+
       </div>
-
     </footer>
-  )
-
+  );
 };
 
-export default Footer;  
+export default Footer;

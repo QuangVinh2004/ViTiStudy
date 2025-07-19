@@ -43,6 +43,10 @@ function HomePage() {
       <ListItemLayout>
         <CardComponent type="simple" title="GOAT Lionel Messi" description="Cầu thủ vĩ đại nhất làng túc cầu." imageUrl="https://img4.thuthuatphanmem.vn/uploads/2020/12/25/anh-messi-trong-mon-bong-da_105532690.jpg" rating={4}/>
         <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
       </ListItemLayout>
 
       <TitleComponent text="Gợi ý khóa học"/>

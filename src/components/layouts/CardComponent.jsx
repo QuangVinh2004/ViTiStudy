@@ -14,7 +14,7 @@ const CardComponent = ({
 }) => {
     return (
         <div
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="bg-white rounded-lg shadow-md overflow-hidden min-w-[250px] flex-shrink-0 cursor-pointer "
             onClick={onClick}
         >
             <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
