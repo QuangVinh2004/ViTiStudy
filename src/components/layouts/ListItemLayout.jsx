@@ -21,15 +21,7 @@ const ListItemLayout = ({ children, className = "" }) => {
 
   return (
     <div className="relative">
-      {cardCount >= 3 && (
-        <ButtonComponent
-          text=""
-          onClick={() => scrollByCards("prev")}
-          rightIcon={<FontAwesomeIcon icon={faArrowLeft} />}
-          className="absolute top-[40%] left-[-2%] -translate-y-1/2 z-10 w-[50px] h-[50px] rounded-full flex items-center justify-center shadow-md"
-          bgColor="bg-white"
-        />
-      )}
+      
 
       <ScrollContainer
         innerRef={scrollRef}
@@ -40,15 +32,7 @@ const ListItemLayout = ({ children, className = "" }) => {
         {React.Children.toArray(children)}
       </ScrollContainer>
 
-      {cardCount >= 3 && (
-        <ButtonComponent
-          text=""
-          onClick={() => scrollByCards("next")}
-          rightIcon={<FontAwesomeIcon icon={faArrowRight} />}
-          className="absolute top-[40%] right-[-2%] -translate-y-1/2 z-10 w-[50px] h-[50px] rounded-full flex items-center justify-center shadow-md"
-          bgColor="bg-white"
-        />
-      )}
+      
     </div>
   );
 };

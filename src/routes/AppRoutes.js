@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import HomePage from '../pages/HomePage';
+import CourseDetail from '../pages/CourseDetail';
 
 
 
@@ -10,6 +11,7 @@ function AppRoutes() {
       <Routes>
 
         <Route path="/" element={<HomePage />} />
+        <Route path="/course/course-detail" element={<CourseDetail />} />
           
       </Routes>
     </BrowserRouter>
