@@ -1,4 +1,4 @@
-import logoweb from "../../assets/images/logoweb.png";
+// import logoweb from "../../assets/images/logoweb.png";
 
 const LogoComponent = ({
     className = "",
@@ -6,7 +6,7 @@ const LogoComponent = ({
     return (
         <div className={`flex items-center h-[55px] ${className}`}>
             <img
-                src={logoweb}
+                src="https://quiz.com/images/logo/quiz-multicolor.svg"
                 alt="Logo"
                 className="w-full"
             />

@@ -2,8 +2,16 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { CardComponent, SlideComponent, ListItemLayout } from "../components/layouts";
 import { TitleComponent } from "../components/common";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    console.log("click")
+    navigate('/course/course-detail');
+  };
+
   const slides = [
     {
       title: "Kèo nhà cái tại fb88",
@@ -41,8 +49,20 @@ function HomePage() {
       <TitleComponent text="Khóa học của tôi."/>
 
       <ListItemLayout>
-        <CardComponent type="simple" title="GOAT Lionel Messi" description="Cầu thủ vĩ đại nhất làng túc cầu." imageUrl="https://img4.thuthuatphanmem.vn/uploads/2020/12/25/anh-messi-trong-mon-bong-da_105532690.jpg" rating={4}/>
-        <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
+        <CardComponent 
+          onClick={handleCardClick} 
+          type="simple" 
+          title="GOAT Lionel Messi" 
+          description="Cầu thủ vĩ đại nhất làng túc cầu." 
+          imageUrl="https://thcshongthaiad.edu.vn/wp-content/uploads/2023/01/dia-ly.png" 
+          rating={4}
+        />
+        <CardComponent 
+          onClick={() => handleCardClick()}
+          title="Bảy Chọ - Bủ ngay" 
+          description="Ăn vạ, hải dưới, hôi bàn thắng..." 
+          imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" 
+        />
         <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
         <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />
         <CardComponent title="Bảy Chọ - Bủ ngay" description="Ăn vạ, hải dưới, hôi bàn thắng..." imageUrl="https://tophinhanhdep.com/wp-content/uploads/2021/10/Cristiano-Ronaldo-Portugal-Wallpapers.jpg" />

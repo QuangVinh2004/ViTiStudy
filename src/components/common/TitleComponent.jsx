@@ -11,11 +11,11 @@ const TitleComponent = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="text-left mt-9 mb-6 cursor-pointer">
+    <div className="text-left mt-9 mb-4 cursor-pointer">
       <div ref={wrapperRef} className="inline-block">
-        <h1 className="text-3xl font-bold m-0 font-sans">{text}</h1>
+        <p className="text-2xl font-bold m-0 font-sans">{text}</p>
         <div
-          className="mx-auto h-1 rounded bg-gradient-to-r from-amber-300 to-cyan-300 transition-all duration-200"
+          className="mx-auto h-[3px] rounded bg-gradient-to-r from-amber-300 to-cyan-300 transition-all duration-200"
           style={{ width: underlineWidth, minWidth: 1 }}
         />
       </div>
