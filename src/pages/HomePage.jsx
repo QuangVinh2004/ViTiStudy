@@ -9,7 +9,7 @@ function HomePage() {
 
   const handleCardClick = () => {
     console.log("click")
-    navigate('/course/course-detail');
+    navigate('/course/course-direction');
   };
 
   const slides = [
@@ -71,7 +71,7 @@ function HomePage() {
 
       <TitleComponent text="Gợi ý khóa học"/>
 
-      <ListItemLayout>
+      <ListItemLayout >
         <CardComponent 
           type="detail" 
           title="GOAT Lionel Messi" 
