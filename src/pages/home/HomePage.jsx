@@ -18,7 +18,7 @@ function HomePage() {
   };
   const handleTestClick = () => {
     console.log("test click")
-    navigate('/test');
+    navigate('/course/test');
   }
 
   const slides = [
