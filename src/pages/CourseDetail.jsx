@@ -14,7 +14,7 @@ function CourseDetail() {
         description: "Cùng thầy Trần Dân tìm hiểu địa lí Việt Nam qua các bài học thú vị cùng các bài tập tự luyện giúp các em ghi nhớ nhanh và hiểu sâu hơn về địa lí nước ta.",
         teacher: {
             name: "Thầy Trịnh Quang Thắng",
-            avatar: "https://scontent.fdad2-1.fna.fbcdn.net/v/t39.30808-6/474444882_1302949217615192_7690743294391666520_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=78OvE9IgzXsQ7kNvwH1l5sA&_nc_oc=Adm3oUdtHlNwG5BFdA7pObCMUNwCy_uUMbhaq5Bei2H18-BHzLWdqhMxqM10DDj3Vp64Qyb-yDHadoWOO73TKlMM&_nc_zt=23&_nc_ht=scontent.fdad2-1.fna&_nc_gid=SBl1i_cYT-ufn0tQVJeMkw&oh=00_AfTJhKTgPFuqgUUzttP0lvasnTUJtzSdjtSiHH8p46QZlg&oe=68862E6E",
+            avatar: "https://randomuser.me/api/portraits/men/45.jpg",
             bio: "Giáo viên Địa lí hơn 15 năm kinh nghiệm.",
         },
     };
@@ -44,7 +44,7 @@ function CourseDetail() {
         },
         {
             name: "Trịnh Trần Phương Huy",
-            avatar: "https://scontent.fdad1-2.fna.fbcdn.net/v/t39.30808-6/484543239_1220077779635570_8139928040846312333_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=x00BH1d0FQYQ7kNvwHX-lCV&_nc_oc=Adl7GYmFAWzv7aIdmvxmTp8aRn7ClFttoZoSCpkZoiQltvw-k-RDdwkpEiQ3M9s4xkl-icXAmlpSoIb1lAwYD-MX&_nc_zt=23&_nc_ht=scontent.fdad1-2.fna&_nc_gid=YbwKg1F2IKWsclhyycWy-w&oh=00_AfSmIiMrrjCn-REeUqzB3sqXgBc_RGfNe5ysEP6RT3zTbw&oe=68863B80",
+            avatar: "https://randomuser.me/api/portraits/men/45.jpg",
             rating: 5,
             comment: "Địt m tuyệt cú mèo luôn. Xem hay hơn cả phim hành động two people",
         },

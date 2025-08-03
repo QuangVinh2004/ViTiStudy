@@ -15,7 +15,7 @@ const TitleComponent = ({ text }) => {
       <div ref={wrapperRef} className="inline-block">
         <p className="text-2xl font-bold m-0 font-sans">{text}</p>
         <div
-          className="mx-auto h-[3px] rounded bg-gradient-to-r from-amber-300 to-cyan-300 transition-all duration-200"
+          className="mx-auto h-[3px] rounded bg-gradient-to-r from-neutral-800 via-cyan-300 to-neutral-500 transition-all duration-200"
           style={{ width: underlineWidth, minWidth: 1 }}
         />
       </div>
