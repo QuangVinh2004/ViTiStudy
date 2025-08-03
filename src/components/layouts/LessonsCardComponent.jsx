@@ -38,12 +38,12 @@ const LessonsCardComponent = ({
   };
 
   return (
-    <div className={`bg-white mb-3 rounded-md shadow-sm ${className}`}>
+    <div className={`bg-white rounded-md shadow-sm ${className}`}>
       <div
         onClick={toggleOpen}
         className="cursor-pointer p-4 flex justify-between items-center border-b"
       >
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
           <i
             className={`fa-solid ${
               open ? "fa-caret-down" : "fa-caret-right"
