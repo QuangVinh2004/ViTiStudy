@@ -4,26 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ButtonComponent, InputComponent } from "../common";
 import LogoComponent from "../common/LogoComponent";
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from "../../context/AuthContext";
 
 function Header() {
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [user, setUser] = useState(null);
-
-    // Kiểm tra session khi load
-    useEffect(() => {
-        const savedUser = sessionStorage.getItem("userSession");
-        if (savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-    }, []);
-
-    const handleLogout = () => {
-        sessionStorage.removeItem("userSession");
-        setUser(null);
-        window.location.reload();
-    };
+    const { user } = useContext(AuthContext);
 
     return (
         <header>
@@ -40,8 +27,9 @@ function Header() {
                     // Nếu đã đăng nhập
                     <div className="flex items-center gap-4">
                         <i className="fa-solid fa-bell font-medium"></i>
+                        <b>{user.username}</b>
                         <img
-                            src={user.avatar}
+                            src={user.avatar || "https://img.freepik.com/vector-mien-phi/vong-tron-mau-xanh-voi-nguoi-dung-mau-trang_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"}
                             alt="avatar"
                             className="w-10 h-10 rounded-full border"
                         />
