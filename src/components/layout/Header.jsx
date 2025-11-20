@@ -27,7 +27,13 @@ function Header() {
                     // Nếu đã đăng nhập
                     <div className="flex items-center gap-4">
                         <i className="fa-solid fa-bell font-medium"></i>
-                        <b>{user.username}</b>
+                        {
+                            user.role === "teacher" ? (
+                                <ButtonComponent text="Lớp học của tôi" type="link" href="/teacher"/>
+                            ) : (
+                                <ButtonComponent text="My Learning" type="link" href="/my-learning"/>
+                            )
+                        }
                         <img
                             src={user.avatar || "https://img.freepik.com/vector-mien-phi/vong-tron-mau-xanh-voi-nguoi-dung-mau-trang_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"}
                             alt="avatar"

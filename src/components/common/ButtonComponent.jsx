@@ -21,7 +21,7 @@ const ButtonComponent = ({
             :
             <a
                 href={href}
-                className={`${textColor}  ${className}`}
+                className={`${textColor}  ${className} text-blue-600 hover:text-blue-800 no-underline hover:underline font-medium`}
             >
                 {leftIcon && <span className="mr-1">{leftIcon}</span>}
                 <span>{text}</span>
