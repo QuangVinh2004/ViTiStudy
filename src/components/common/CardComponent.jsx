@@ -13,13 +13,13 @@ const CardComponent = ({
 }) => {
     return (
         <div
-            className="bg-white rounded-lg shadow-md overflow-hidden min-w-[250px] flex-shrink-0 cursor-pointer transition-transform duration-200 hover:-translate-y-2"
+            className="bg-white rounded-lg shadow-md overflow-hidden min-w-[250px] max-w-[310px] flex-shrink-0 cursor-pointer transition-transform duration-200 hover:-translate-y-2"
             onClick={onClick}
         >
             <img src={imageUrl} alt={title} className="w-[310px] h-48 object-cover" />
             <div className="p-4">
-                <h2 className="text-xl font-semibold mb-1">{title}</h2>
-                <p className="text-gray-700 mb-1">{description}</p>
+                <h2 className="text-xl font-semibold mb-1 truncate">{title}</h2>
+                <p className="text-gray-700 mb-1 truncate">{description}</p>
 
                 {type === "detail" && (
                     <>

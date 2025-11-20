@@ -1,8 +1,18 @@
 import LogoComponent from "../../components/common/LogoComponent";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import api from "../../api/axios";
+import { AuthContext } from "../../context/AuthContext";
 
 function CreateCoursePage() {
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    console.log("User from AuthContext:", user);
+    if (user) {
+      console.log("User ID:", user.id);
+    }
+  }, [user]);
+
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",
@@ -10,7 +20,6 @@ function CreateCoursePage() {
     duration: "",
     level: "",
     total_lessons: "",
-    teacher_id: 1, // tạm cứng
     coverFile: null,
     coverPreview: null,
   });
@@ -48,7 +57,7 @@ function CreateCoursePage() {
       formData.append("duration", courseData.duration);
       formData.append("level", courseData.level);
       formData.append("total_lessons", courseData.total_lessons);
-      formData.append("teacher_id", courseData.teacher_id);
+      formData.append("teacher_id", user.id);
 
       if (courseData.coverFile) {
         formData.append("thumbnail", courseData.coverFile);
