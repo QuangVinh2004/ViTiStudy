@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 // Dữ liệu mẫu
 const user = {
   name: 'Nguyễn Văn A',
@@ -76,7 +74,6 @@ function ProgressBar({ percent }) {
 }
 
 export default function StudentPage() {
-  const [tab, setTab] = useState('score');
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -221,18 +218,3 @@ export default function StudentPage() {
     </div>
   );
 }
-
-// Style helper
-const metricCardStyle = {
-  background: '#fff',
-  borderRadius: 12,
-  padding: 16,
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  boxShadow: '0 1px 4px #0001'
-};
-const iconStyle = { fontSize: 28, marginBottom: 6 };
-const metricValueStyle = { fontWeight: 700, fontSize: 20, marginBottom: 2 };
-const metricLabelStyle = { fontSize: 13, color: '#555' };
