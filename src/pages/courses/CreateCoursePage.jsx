@@ -1,4 +1,3 @@
-import LogoComponent from "../../components/common/LogoComponent";
 import { useState, useContext, useEffect } from "react";
 import api from "../../api/axios";
 import { AuthContext } from "../../context/AuthContext";
@@ -93,17 +92,11 @@ function CreateCoursePage() {
       alert("Bạn phải tạo khóa học trước!");
       return;
     }
-    window.location.href = `/courses/${createdCourseId}/lessons/create`;
+    window.location.href = `/teacher/manage-courses/${createdCourseId}/lessons`;
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4 space-y-10">
-      {/* Logo + tiêu đề */}
-      <div className="flex flex-col items-center">
-        <LogoComponent className="w-[200px] mb-6" />
-        <h1 className="text-3xl font-bold mb-6">Tạo khóa học mới</h1>
-      </div>
-
+    <div className="max-w-7xl mx-auto  px-4 space-y-10">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Form nhập liệu */}
         <div className="space-y-4 md:col-span-1">

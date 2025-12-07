@@ -16,7 +16,7 @@ function Header() {
         <header>
             <div className="flex items-center justify-between px-[100px] py-4 ">
                 <LogoComponent className="w-[200px]" />
-
+                
                 <InputComponent
                     leftIcon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                     placeholder="Tìm kiếm các khóa học, giáo viên, quiz, ..."

@@ -1,6 +1,4 @@
 import React from 'react';
-import TeacherSidebar from './TeacherSidebar';
-
 // Dữ liệu mẫu cho dashboard
 const dashboardData = {
   totalCourses: 4,
@@ -23,7 +21,7 @@ const dashboardData = {
 export default function TeacherPage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <TeacherSidebar />
+      
       {/* Main Content */}
       <main className="w-4/5 p-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
