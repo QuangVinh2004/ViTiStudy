@@ -1,6 +1,13 @@
 import  { useState } from "react";
 
-const LessonItem = ({ title, duration, isLocked, isCompleted }) => {
+const LessonItem = ({
+  title,
+  duration,
+  isLocked = false,
+  isCompleted = false,
+  active = false,
+  onClick,
+}) => {
   let icon = null;
   if (isCompleted) {
     icon = <i className="fa-solid fa-check text-green-500"></i>;
@@ -9,13 +16,30 @@ const LessonItem = ({ title, duration, isLocked, isCompleted }) => {
   }
 
   return (
-    <div className="flex justify-between items-center px-4 py-2 hover:bg-gray-50 rounded-md">
+    <div
+      onClick={!isLocked ? onClick : undefined}
+      className={`flex justify-between items-center px-4 py-2 rounded-md transition
+        ${isLocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:bg-gray-50"}
+        ${active ? "bg-blue-100 ring-1 ring-blue-300" : ""}
+      `}
+    >
       <div className="flex items-center space-x-2">
         <i className="fa-solid fa-file-lines text-gray-500"></i>
         <span className="text-sm text-gray-800">{title}</span>
       </div>
+
       <div className="flex items-center space-x-3">
-        <button className="text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded">Preview</button>
+        {!isLocked && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.();
+            }}
+            className="text-xs px-2 py-1 bg-blue-100 text-blue-600 rounded"
+          >
+            Preview
+          </button>
+        )}
         <span className="text-sm text-gray-600">{duration}</span>
         {icon}
       </div>
