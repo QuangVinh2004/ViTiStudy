@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import api from "../../api/axios";
-import { useExamState } from "./useExamState";
-import ExamBasicInfo from "./components/ExamBasicInfo";
-import Section from "./components/Section";
-import CreateMethodSelector from "./components/CreateMethodSelector";
-import ManualExamCreator from "./components/ManualExamCreator";
-import AIExamCreator from "./components/AIExamCreator";
+import api from "../../../api/axios";
+import { useExamState } from "../useExamState";
+import ExamBasicInfo from "./ExamBasicInfo";
+import Section from "./Section";
 
-export default function CreateExam() {
+export default function ManualExamCreator({ onBack }) {
   const [loading, setLoading] = useState(false);
-  const [createMethod, setCreateMethod] = useState(null); // null | "manual" | "ai"
 
   const {
     exam,
@@ -69,34 +65,19 @@ export default function CreateExam() {
     }
   };
 
-  const handleBack = () => {
-    setCreateMethod(null);
-  };
-
-  const handleExamGenerated = (generatedExam) => {
-    // Xử lý sau khi AI tạo xong đề
-    console.log("Generated exam:", generatedExam);
-    // Có thể chuyển hướng hoặc hiển thị thông báo
-  };
-
-  // Hiển thị màn hình chọn phương thức
-  if (!createMethod) {
-    return <CreateMethodSelector onSelect={setCreateMethod} />;
-  }
-
-  // Hiển thị giao diện tạo thủ công
-  if (createMethod === "manual") {
-    return <ManualExamCreator onBack={handleBack} />;
-  }
-
-  // Hiển thị giao diện tạo bằng AI
-  if (createMethod === "ai") {
-    return <AIExamCreator onBack={handleBack} onExamGenerated={handleExamGenerated} />;
-  }
-
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow mt-8 mb-8">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">Tạo đề kiểm tra mới</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-blue-700">Tạo đề kiểm tra thủ công</h2>
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          ← Quay lại
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <ExamBasicInfo exam={exam} onChange={handleExamChange} />
 
@@ -128,7 +109,14 @@ export default function CreateExam() {
           </button>
         </div>
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-6 py-2 border border-gray-300 rounded font-semibold hover:bg-gray-50 transition"
+          >
+            Hủy
+          </button>
           <button
             type="submit"
             disabled={loading}

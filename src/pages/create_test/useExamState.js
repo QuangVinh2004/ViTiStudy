@@ -1,15 +1,17 @@
 import { useState, useCallback } from "react";
 import { genId, emptySection, emptyQuestion, emptyOption } from "./constants";
 
-export const useExamState = () => {
-  const [exam, setExam] = useState({
-    id: genId(),
-    title: "",
-    subject: "",
-    description: "",
-    duration_minutes: 60,
-    sections: [emptySection()],
-  });
+export const useExamState = (initialExam = null) => {
+  const [exam, setExam] = useState(
+    initialExam || {
+      id: genId(),
+      title: "",
+      subject: "",
+      description: "",
+      duration_minutes: 60,
+      sections: [emptySection()],
+    }
+  );
 
   const handleExamChange = useCallback((e) => {
     const { name, value, type } = e.target;
@@ -123,12 +125,17 @@ export const useExamState = () => {
           ...s,
           questions: s.questions.map((q) => {
             if (q.id !== questionId) return q;
-            if (patch.hasOwnProperty("is_correct") && q.question_type === "TRUE_FALSE" && patch.is_correct) {
+            
+            // Nếu là MULTIPLE_CHOICE và đang set is_correct = true
+            // thì bỏ chọn tất cả các option khác (chỉ cho phép 1 đáp án đúng)
+            if (patch.hasOwnProperty("is_correct") && q.question_type === "MULTIPLE_CHOICE" && patch.is_correct) {
               return {
                 ...q,
                 options: q.options.map((o) => (o.id === optionId ? { ...o, ...patch } : { ...o, is_correct: false })),
               };
             }
+            
+            // Với TRUE_FALSE, cho phép nhiều đáp án đúng
             return { ...q, options: q.options.map((o) => (o.id === optionId ? { ...o, ...patch } : o)) };
           }),
         };
@@ -138,6 +145,7 @@ export const useExamState = () => {
 
   return {
     exam,
+    setExam, // Export setExam để có thể set từ bên ngoài nếu cần
     handleExamChange,
     addSection,
     removeSection,

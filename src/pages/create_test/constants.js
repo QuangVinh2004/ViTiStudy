@@ -16,7 +16,7 @@ export const emptyQuestion = (type = "MULTIPLE_CHOICE") => ({
   id: genId(),
   question_text: "",
   question_type: type,
-  points: 1,
+  points: 1.0,
   options: type === "SHORT_ANSWER" ? [] : [emptyOption(), emptyOption()],
   correct_text_answer: "",
   image_url: "",

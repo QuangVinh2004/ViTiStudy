@@ -75,7 +75,9 @@ export default function Question({
           <label className="block text-xs mb-1 mt-2">Điểm</label>
           <input 
             type="number" 
-            min={0} 
+            min={0.1}
+            max={10}
+            step={0.1}
             className="w-full border rounded px-2 py-1" 
             value={question.points} 
             onChange={(e) => onUpdate(sectionId, question.id, { points: Number(e.target.value) })} 
@@ -85,7 +87,11 @@ export default function Question({
 
       {(question.question_type === "MULTIPLE_CHOICE" || question.question_type === "TRUE_FALSE") && (
         <div>
-          <div className="font-medium text-xs mb-1">Các lựa chọn đáp án</div>
+          <div className="font-medium text-xs mb-1">
+            {question.question_type === "MULTIPLE_CHOICE" 
+              ? "Các lựa chọn đáp án (chỉ chọn 1 đáp án đúng)" 
+              : "Các lựa chọn đáp án (có thể chọn nhiều đáp án đúng)"}
+          </div>
           {question.options.map((opt, oIdx) => (
             <div key={opt.id} className="flex items-center gap-2 mb-1">
               <input 
@@ -95,11 +101,21 @@ export default function Question({
                 placeholder={`Đáp án ${String.fromCharCode(65 + oIdx)}`} 
               />
               <label className="flex items-center gap-1 text-xs">
-                <input 
-                  type="checkbox" 
-                  checked={!!opt.is_correct} 
-                  onChange={(e) => onUpdateOption(sectionId, question.id, opt.id, { is_correct: e.target.checked })} 
-                /> Đúng
+                {question.question_type === "MULTIPLE_CHOICE" ? (
+                  <input 
+                    type="radio" 
+                    name={`correct-${sectionId}-${question.id}`}
+                    checked={!!opt.is_correct} 
+                    onChange={(e) => onUpdateOption(sectionId, question.id, opt.id, { is_correct: e.target.checked })} 
+                  />
+                ) : (
+                  <input 
+                    type="checkbox" 
+                    checked={!!opt.is_correct} 
+                    onChange={(e) => onUpdateOption(sectionId, question.id, opt.id, { is_correct: e.target.checked })} 
+                  />
+                )}
+                Đúng
               </label>
               {question.options.length > 2 && (
                 <button 
