@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import { CardComponent, SlideComponent, ListItemLayout } from "../../components/layouts";
 import { TitleComponent } from "../../components/common";
 import { useNavigate } from "react-router-dom";
+import api from '../../api/axios';
 import StatsSection from './StatsSection';
 import ReviewSection from './ReviewSection';
 import TeachersSection from './TeachersSection';
@@ -11,14 +13,16 @@ import FeedbackSection from './FeedbackSection';
 
 function HomePage() {
   const navigate = useNavigate();
+  const [exams, setExams] = useState([]);
+  const [loadingExams, setLoadingExams] = useState(true);
 
   const handleCardClick = () => {
     console.log("click")
     navigate('/course/course-direction');
   };
-  const handleTestClick = () => {
-    console.log("test click")
-    navigate('/course/test');
+  const handleTestClick = (examId) => {
+    console.log("test click", examId)
+    navigate(`/test/${examId}`);
   }
 
   const slides = [
@@ -164,6 +168,25 @@ const course = [
   },
 ]
 
+  // Fetch exams from API
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        setLoadingExams(true);
+        const response = await api.get('/exams/');
+        if (response.data && response.data.data) {
+          setExams(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching exams:', error);
+      } finally {
+        setLoadingExams(false);
+      }
+    };
+
+    fetchExams();
+  }, []);
+
   return (
 
     <div className="px-[100px] py-3">
@@ -224,16 +247,26 @@ const course = [
 
       <TitleComponent text="Bài kiểm tra phổ biến" />
       <ListItemLayout>
-        {course.map((item, index) => (
-          <CardComponent
-            key={index}
-            title={item.title}
-            description={item.description}
-            imageUrl={item.image}
-            rating={item.rating}
-            onClick={handleTestClick}
-          />
-        ))}
+        {loadingExams ? (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            Đang tải bài kiểm tra...
+          </div>
+        ) : exams.length > 0 ? (
+          exams.map((exam) => (
+            <CardComponent
+              key={exam.id}
+              title={exam.title}
+              description={exam.description || `Thời gian: ${exam.duration_minutes} phút - ${exam.sections?.reduce((sum, s) => sum + (s.questions?.length || 0), 0) || 0} câu hỏi`}
+              imageUrl="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500"
+              rating={4.5}
+              onClick={() => handleTestClick(exam.id)}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            Chưa có bài kiểm tra nào
+          </div>
+        )}
       </ListItemLayout>
 
       <TeachersSection teachers={teachers} />

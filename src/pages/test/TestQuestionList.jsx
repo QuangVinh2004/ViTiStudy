@@ -1,68 +1,50 @@
 import React from 'react';
+import QuestionItem from './components/QuestionItem';
 
-const TestQuestionList = ({
-    TestData,
-    userAnswers,
-    submitted,
-    handleSelect,
-    questionRefs
-}) => (
-    <div className="flex-1">
-        {TestData.map((q, index) => (
-            <div
-                key={index}
-                className="mb-6"
-                ref={(el) => (questionRefs.current[index] = el)}
-            >
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-5 border border-indigo-200 transition-shadow duration-200">
-                    <h2 className="text-lg font-semibold mb-2 text-indigo-700">
-                        {index + 1}. {q.question}
-                    </h2>
-                    {q.image && (
-                        <div className="my-3 flex justify-start">
-                            <img
-                                src={q.image}
-                                alt={`Hình minh họa cho câu hỏi ${index + 1}`}
-                                className="max-h-56 rounded shadow"
-                            />
-                        </div>
-                    )}
-                    {q.audio && (
-                        <div className="my-3 flex justify-start">
-                            <audio controls src={q.audio}>
-                                Trình duyệt của bạn không hỗ trợ audio.
-                            </audio>
-                        </div>
-                    )}
-                    <div className="space-y-2">
-                        {q.options.map((opt, i) => (
-                            <label key={i} className="flex items-center gap-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name={`question-${index}`}
-                                    value={opt}
-                                    disabled={submitted}
-                                    checked={userAnswers[index] === opt}
-                                    onChange={() => handleSelect(index, opt)}
-                                />
-                                <span>{opt}</span>
-                            </label>
-                        ))}
-                    </div>
-                    {submitted && (
-                        <div className="mt-2 text-sm">
-                            <p
-                                className={`font-medium ${userAnswers[index] === q.answer ? 'text-green-600' : 'text-red-600'}`}
-                            >
-                                Đáp án đúng: {q.answer}
-                            </p>
-                            <p className="text-gray-600">Giải thích: {q.explanation}</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        ))}
+export default function TestQuestionList({ 
+  examData, 
+  userAnswers, 
+  submitted, 
+  onAnswerChange, 
+  questionRefs 
+}) {
+  let globalQuestionNumber = 0;
+
+  return (
+    <div className="flex-1 overflow-y-auto pr-4" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      {examData?.sections?.map((section, sectionIndex) => (
+        <div key={sectionIndex} className="mb-8">
+          <div className="bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-lg p-4 mb-4 shadow-md">
+            <h2 className="text-xl font-bold">{section.title}</h2>
+            {section.description && (
+              <p className="text-sky-100 text-sm mt-1">{section.description}</p>
+            )}
+          </div>
+
+          {section.questions?.map((question, questionIndex) => {
+            globalQuestionNumber++;
+            const currentNumber = globalQuestionNumber;
+            const answerKey = `${sectionIndex}-${questionIndex}`;
+
+            return (
+              <div 
+                key={questionIndex}
+                ref={(el) => (questionRefs.current[currentNumber - 1] = el)}
+              >
+                <QuestionItem
+                  question={question}
+                  questionNumber={currentNumber}
+                  userAnswer={userAnswers[answerKey]}
+                  onChange={onAnswerChange}
+                  submitted={submitted}
+                  sectionIndex={sectionIndex}
+                  questionIndex={questionIndex}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
-);
-
-export default TestQuestionList;
+  );
+}

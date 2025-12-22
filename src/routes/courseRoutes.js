@@ -3,6 +3,7 @@ import CourseDetail from '../pages/courses/CourseDetail';
 import CourseDirection from '../pages/CourseDirection';
 import CheckoutPage from '../pages/CheckoutPage';
 import TestPage from '../pages/test/TestPage';
+import TestResultPage from '../pages/test/TestResultPage';
 import CreateExam from '../pages/create_test/CreateExam';
 import CreateCoursePage from '../pages/courses/CreateCoursePage';
 import ManageLessonsPage from "../pages/courses/ManageLessonsPage";
@@ -12,7 +13,8 @@ const courseRoutes = [
   { path: '/course/course-direction', element: <CourseDirection /> },
   { path: '/course/course-detail', element: <CourseDetail /> },
   { path: '/course/course-detail/checkout', element: <CheckoutPage /> },
-  { path: '/course/test', element: <TestPage /> },
+  { path: '/test/:examId', element: <TestPage /> },
+  { path: '/test/:examId/result/:attemptId', element: <TestResultPage /> },
   { path: '/course/create-test', element: <CreateExam />, roles: ['teacher', 'admin'] },
   { path: '/course/create-course', element: <CreateCoursePage />, roles: ['teacher', 'admin'] },
   { path: '/course/course-list', element: <CourseListPage />, roles: ['teacher', 'admin'] },
