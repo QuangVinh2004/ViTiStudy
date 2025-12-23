@@ -65,7 +65,7 @@ export default function AIExamCreator({ onBack, onExamGenerated }) {
 
   // Nếu đang ở chế độ chỉnh sửa
   if (editMode && generatedExam) {
-    const editableExam = convertAIExamToEditable(generatedExam);
+    const editableExam = convertAIExamToEditable(generatedExam, formData.duration_minutes);
     return (
       <AIExamEditor
         initialExam={editableExam}

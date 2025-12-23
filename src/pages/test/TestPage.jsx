@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import ButtonComponent from '../../components/common/ButtonComponent';
@@ -40,6 +40,13 @@ function TestPage() {
     }
   }, [examId]);
 
+  // Callback khi hết thời gian - tự động chuyển đến trang kết quả
+  const handleTimeUp = useCallback((finalAttemptId) => {
+    console.log('⏰ Hết thời gian! Tự động nộp bài và chuyển sang trang kết quả...');
+    // Navigate to result page
+    navigate(`/test/${examId}/result/${finalAttemptId}`);
+  }, [examId, navigate]);
+
   const {
     started,
     timeLeft,
@@ -53,7 +60,7 @@ function TestPage() {
     handleSubmit,
     getAnsweredCount,
     isQuestionAnswered,
-  } = useExamTest(examData, examId);
+  } = useExamTest(examData, examId, handleTimeUp);
 
   // Prevent navigation when exam is in progress
   useEffect(() => {

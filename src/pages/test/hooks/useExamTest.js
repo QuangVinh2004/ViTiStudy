@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../../../api/axios';
 
-export const useExamTest = (examData, examId) => {
+export const useExamTest = (examData, examId, onTimeUp) => {
   const STORAGE_KEYS = {
     STARTED: `exam_started_${examId}`,
     TIME_LEFT: `exam_timeLeft_${examId}`,
@@ -84,116 +84,7 @@ export const useExamTest = (examData, examId) => {
     return answersArray;
   }, [userAnswers, examData]);
 
-  // Lưu answers vào localStorage và gửi lên server
-  useEffect(() => {
-    if (started && !submitted && attemptId) {
-      // Save to localStorage
-      localStorage.setItem(STORAGE_KEYS.ANSWERS, JSON.stringify(userAnswers));
-      
-      // Auto-save to server (debounced)
-      const saveTimer = setTimeout(async () => {
-        try {
-          const answersArray = convertAnswersToArray();
-          
-          // Only save if there are answers
-          if (answersArray.length === 0) {
-            console.log('No answers to save yet');
-            return;
-          }
-          
-          console.log('Auto-saving answers array:', answersArray);
-          console.log('Attempt ID:', attemptId);
-          
-          const response = await api.post(`/attempts/${attemptId}/answers`, {
-            answers: answersArray,
-          });
-          
-          console.log('Auto-save response:', response.data);
-          console.log('Answers auto-saved to server');
-        } catch (error) {
-          console.error('Error auto-saving answers:', error);
-          console.error('Error response:', error.response?.data);
-        }
-      }, 2000); // Debounce 2 seconds
-
-      return () => clearTimeout(saveTimer);
-    }
-  }, [userAnswers, started, submitted, attemptId, convertAnswersToArray]);
-
-  // Timer countdown
-  useEffect(() => {
-    if (!started || submitted) return;
-    
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const newTime = prev - 1;
-        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, newTime);
-        
-        // Auto-submit when time runs out
-        if (newTime <= 0) {
-          clearInterval(timer);
-          handleSubmit();
-        }
-        
-        return newTime;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [started, submitted]);
-
-  const handleStart = useCallback(async () => {
-    try {
-      // Call API to start attempt
-      console.log('Starting exam with examId:', examId);
-      const response = await api.post('/attempts/start', {
-        exam_id: examId,
-      });
-
-      console.log('API Response:', response);
-      console.log('Response data:', response.data);
-      console.log('Response data.data:', response.data.data);
-      console.log('Full data object:', JSON.stringify(response.data.data, null, 2));
-      
-      if (response.data && response.data.data && response.data.data.attempt) {
-        const newAttemptId = response.data.data.attempt.id;
-        console.log('Extracted attemptId:', newAttemptId);
-        
-        if (!newAttemptId) {
-          console.error('attemptId is undefined! Response structure:', response.data);
-          return { success: false, error: 'Server không trả về ID bài làm' };
-        }
-        
-        setStarted(true);
-        setTimeLeft(totalDuration);
-        setAttemptId(newAttemptId);
-        setUserAnswers({});
-        
-        localStorage.setItem(STORAGE_KEYS.STARTED, 'true');
-        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, totalDuration.toString());
-        localStorage.setItem(STORAGE_KEYS.ATTEMPT_ID, newAttemptId);
-        localStorage.setItem(STORAGE_KEYS.ANSWERS, JSON.stringify({}));
-        
-        return { success: true, attemptId: newAttemptId };
-      } else {
-        console.error('Invalid response structure:', response.data);
-        return { success: false, error: response.data?.message || 'Không thể bắt đầu bài kiểm tra' };
-      }
-    } catch (error) {
-      console.error('Error starting exam attempt:', error);
-      console.error('Error details:', error.response?.data);
-      return { success: false, error: error.response?.data?.message || 'Không thể bắt đầu bài kiểm tra' };
-    }
-  }, [examId, totalDuration]);
-
-  const handleAnswerChange = useCallback((sectionIndex, questionIndex, answer) => {
-    const key = `${sectionIndex}-${questionIndex}`;
-    setUserAnswers((prev) => ({
-      ...prev,
-      [key]: answer,
-    }));
-  }, []);
-
+  // Define handleSubmit early so it can be used in timer
   const handleSubmit = useCallback(async () => {
     if (!attemptId || submitting) return { success: false, error: 'Không thể nộp bài' };
     
@@ -251,6 +142,128 @@ export const useExamTest = (examData, examId) => {
       setSubmitting(false);
     }
   }, [attemptId, submitting, convertAnswersToArray, userAnswers]);
+
+  // Lưu answers vào localStorage và gửi lên server
+  useEffect(() => {
+    if (started && !submitted && attemptId) {
+      // Save to localStorage
+      localStorage.setItem(STORAGE_KEYS.ANSWERS, JSON.stringify(userAnswers));
+      
+      // Auto-save to server (debounced)
+      const saveTimer = setTimeout(async () => {
+        try {
+          const answersArray = convertAnswersToArray();
+          
+          // Only save if there are answers
+          if (answersArray.length === 0) {
+            console.log('No answers to save yet');
+            return;
+          }
+          
+          console.log('Auto-saving answers array:', answersArray);
+          console.log('Attempt ID:', attemptId);
+          
+          const response = await api.post(`/attempts/${attemptId}/answers`, {
+            answers: answersArray,
+          });
+          
+          console.log('Auto-save response:', response.data);
+          console.log('Answers auto-saved to server');
+        } catch (error) {
+          console.error('Error auto-saving answers:', error);
+          console.error('Error response:', error.response?.data);
+        }
+      }, 2000); // Debounce 2 seconds
+
+      return () => clearTimeout(saveTimer);
+    }
+  }, [userAnswers, started, submitted, attemptId, convertAnswersToArray]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (!started || submitted) return;
+    
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        const newTime = prev - 1;
+        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, newTime);
+        
+        // Auto-submit when time runs out
+        if (newTime <= 0) {
+          clearInterval(timer);
+          
+          // Submit exam and notify parent component
+          handleSubmit().then(result => {
+            if (result.success && onTimeUp) {
+              onTimeUp(result.attemptId);
+            }
+          }).catch(err => {
+            console.error('Error auto-submitting exam:', err);
+            // Still notify parent even if submit fails
+            if (onTimeUp && attemptId) {
+              onTimeUp(attemptId);
+            }
+          });
+        }
+        
+        return newTime > 0 ? newTime : 0;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [started, submitted, handleSubmit, onTimeUp, attemptId]);
+
+  const handleStart = useCallback(async () => {
+    try {
+      // Call API to start attempt
+      console.log('Starting exam with examId:', examId);
+      const response = await api.post('/attempts/start', {
+        exam_id: examId,
+      });
+
+      console.log('API Response:', response);
+      console.log('Response data:', response.data);
+      console.log('Response data.data:', response.data.data);
+      console.log('Full data object:', JSON.stringify(response.data.data, null, 2));
+      
+      if (response.data && response.data.data && response.data.data.attempt) {
+        const newAttemptId = response.data.data.attempt.id;
+        console.log('Extracted attemptId:', newAttemptId);
+        
+        if (!newAttemptId) {
+          console.error('attemptId is undefined! Response structure:', response.data);
+          return { success: false, error: 'Server không trả về ID bài làm' };
+        }
+        
+        setStarted(true);
+        setTimeLeft(totalDuration);
+        setAttemptId(newAttemptId);
+        setUserAnswers({});
+        
+        localStorage.setItem(STORAGE_KEYS.STARTED, 'true');
+        localStorage.setItem(STORAGE_KEYS.TIME_LEFT, totalDuration.toString());
+        localStorage.setItem(STORAGE_KEYS.ATTEMPT_ID, newAttemptId);
+        localStorage.setItem(STORAGE_KEYS.ANSWERS, JSON.stringify({}));
+        
+        return { success: true, attemptId: newAttemptId };
+      } else {
+        console.error('Invalid response structure:', response.data);
+        return { success: false, error: response.data?.message || 'Không thể bắt đầu bài kiểm tra' };
+      }
+    } catch (error) {
+      console.error('Error starting exam attempt:', error);
+      console.error('Error details:', error.response?.data);
+      return { success: false, error: error.response?.data?.message || 'Không thể bắt đầu bài kiểm tra' };
+    }
+  }, [examId, totalDuration]);
+
+  const handleAnswerChange = useCallback((sectionIndex, questionIndex, answer) => {
+    const key = `${sectionIndex}-${questionIndex}`;
+    setUserAnswers((prev) => ({
+      ...prev,
+      [key]: answer,
+    }));
+  }, []);
 
   const getAnsweredCount = useCallback(() => {
     return Object.keys(userAnswers).filter(key => {

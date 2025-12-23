@@ -4,13 +4,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ButtonComponent, InputComponent } from "../common";
 import LogoComponent from "../common/LogoComponent";
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const { user } = useContext(AuthContext);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const { user, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const dropdownRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+        setShowDropdown(false);
+        navigate("/");
+    };
+
+    const handleProfileClick = () => {
+        setShowDropdown(false);
+        navigate(user.role === "teacher" ? "/teacher" : user.role === "admin" ? "/admin" : "/my-learning");
+    };
 
     return (
         <header>
@@ -30,15 +59,39 @@ function Header() {
                         {
                             user.role === "teacher" ? (
                                 <ButtonComponent text="Lớp học của tôi" type="link" href="/teacher"/>
+                            ) : user.role === "admin" ? (
+                                <ButtonComponent text="Trang quản trị" type="link" href="/admin"/>
                             ) : (
                                 <ButtonComponent text="My Learning" type="link" href="/my-learning"/>
                             )
                         }
-                        <img
-                            src={user.avatar || "https://img.freepik.com/vector-mien-phi/vong-tron-mau-xanh-voi-nguoi-dung-mau-trang_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"}
-                            alt="avatar"
-                            className="w-10 h-10 rounded-full border"
-                        />
+                        <div className="relative" ref={dropdownRef}>
+                            <img
+                                src={user.avatar || "https://img.freepik.com/vector-mien-phi/vong-tron-mau-xanh-voi-nguoi-dung-mau-trang_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"}
+                                alt="avatar"
+                                className="w-10 h-10 rounded-full border cursor-pointer hover:opacity-80"
+                                onClick={() => setShowDropdown(!showDropdown)}
+                            />
+                            {showDropdown && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                    <button
+                                        onClick={handleProfileClick}
+                                        className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                    >
+                                        <i className="fa-solid fa-user"></i>
+                                        <span>Trang cá nhân</span>
+                                    </button>
+                                    <div className="border-t border-gray-200 my-1"></div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 flex items-center gap-2"
+                                    >
+                                        <i className="fa-solid fa-right-from-bracket"></i>
+                                        <span>Đăng xuất</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     // Nếu chưa đăng nhập

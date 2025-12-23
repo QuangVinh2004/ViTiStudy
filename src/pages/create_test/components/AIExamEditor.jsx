@@ -32,6 +32,8 @@ export default function AIExamEditor({ initialExam, onBack, onSaved }) {
     const payload = convertEditableToBackend(exam);
 
     console.log("Sending AI-edited exam:", payload);
+    console.log("Original exam duration:", exam.duration); // Debug log
+    console.log("Payload duration:", payload.duration); // Debug log
 
     try {
       const response = await api.post("/exams/create", payload);
