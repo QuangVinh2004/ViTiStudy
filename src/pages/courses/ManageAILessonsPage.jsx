@@ -9,7 +9,14 @@ export default function ManageAILessonsPage() {
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // upload state
+  // ===== Edit course modal =====
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [price, setPrice] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [savingCourse, setSavingCourse] = useState(false);
+
+  // ===== Upload lesson =====
   const [uploadingLessonId, setUploadingLessonId] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -25,6 +32,7 @@ export default function ManageAILessonsPage() {
         ]);
 
         setCourse(courseRes.data.data);
+        setPrice(courseRes.data.data.price || "");
         setSections(sectionRes.data.data);
       } catch (err) {
         console.error(err);
@@ -38,17 +46,48 @@ export default function ManageAILessonsPage() {
   }, [courseId]);
 
   // =========================
+  // UPDATE COURSE INFO
+  // =========================
+  const updateCourseInfo = async () => {
+    try {
+      setSavingCourse(true);
+
+      const formData = new FormData();
+      formData.append("price", price);
+      if (thumbnailFile) {
+        formData.append("thumbnail", thumbnailFile);
+      }
+
+      const { data } = await api.put(
+        `/courses/${courseId}/metadata`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      setCourse(data.data);
+      setOpenEditModal(false);
+      setThumbnailFile(null);
+      setThumbnailPreview(null);
+
+      alert("✅ Đã cập nhật thông tin khóa học");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Cập nhật thất bại");
+    } finally {
+      setSavingCourse(false);
+    }
+  };
+
+  // =========================
   // DELETE SECTION
   // =========================
   const deleteSection = async (sectionId) => {
-    if (!window.confirm("Xóa toàn bộ chương này và các bài học bên trong?"))
-      return;
+    if (!window.confirm("Xóa toàn bộ chương và các bài học bên trong?")) return;
 
     try {
       await api.delete(`/sections/${sectionId}`);
       setSections((prev) => prev.filter((s) => s.id !== sectionId));
     } catch (err) {
-      console.error(err);
       alert("❌ Xóa chương thất bại");
     }
   };
@@ -61,25 +100,20 @@ export default function ManageAILessonsPage() {
 
     try {
       await api.delete(`/lessons/${lessonId}`);
-
       setSections((prev) =>
         prev.map((sec) =>
           sec.id === sectionId
-            ? {
-                ...sec,
-                lessons: sec.lessons.filter((l) => l.id !== lessonId),
-              }
+            ? { ...sec, lessons: sec.lessons.filter((l) => l.id !== lessonId) }
             : sec
         )
       );
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("❌ Xóa bài học thất bại");
     }
   };
 
   // =========================
-  // UPLOAD CONTENT
+  // UPLOAD LESSON CONTENT
   // =========================
   const uploadLessonContent = async (lessonId, file, type) => {
     try {
@@ -95,10 +129,8 @@ export default function ManageAILessonsPage() {
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (e) => {
-            const percent = Math.round((e.loaded * 100) / e.total);
-            setUploadProgress(percent);
-          },
+          onUploadProgress: (e) =>
+            setUploadProgress(Math.round((e.loaded * 100) / e.total)),
         }
       );
 
@@ -111,9 +143,8 @@ export default function ManageAILessonsPage() {
         }))
       );
 
-      alert("✅ Đã upload nội dung bài học");
-    } catch (err) {
-      console.error(err);
+      alert("✅ Upload thành công");
+    } catch {
       alert("❌ Upload thất bại");
     } finally {
       setUploadingLessonId(null);
@@ -122,61 +153,69 @@ export default function ManageAILessonsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="py-32 text-center text-gray-500">
-        ⏳ Đang tải khóa học AI...
-      </div>
-    );
+    return <div className="py-32 text-center">⏳ Đang tải...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-6xl mx-auto px-4 py-10 space-y-10">
 
-        {/* COURSE HEADER */}
-        <div className="bg-white/80 backdrop-blur rounded-3xl shadow-lg p-8 flex items-center gap-6">
-          <div className="w-28 h-28 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 text-3xl font-bold">
-            AI
+        {/* ===== COURSE HEADER ===== */}
+        <div className="bg-white rounded-3xl shadow p-8 flex gap-6 items-center">
+          <div className="w-32 h-32 rounded-xl overflow-hidden bg-gray-100 border">
+            {course.thumbnail ? (
+              <img
+                src={course.thumbnail}
+                alt="thumbnail"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Chưa có ảnh
+              </div>
+            )}
           </div>
 
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {course?.title}
-            </h1>
-            <p className="text-gray-500 mt-1">
-              Hoàn thiện nội dung khóa học do AI tạo
+          <div className="flex-1 space-y-2">
+            <h1 className="text-3xl font-bold">{course.title}</h1>
+            <p className="text-gray-500">
+              Khóa học được AI tạo · Giảng viên hoàn thiện nội dung
+            </p>
+            <p className="text-lg">
+              💰 Giá:{" "}
+              <span className="font-semibold text-indigo-600">
+                {course.price ? `${course.price} VNĐ` : "Miễn phí"}
+              </span>
             </p>
           </div>
+
+          <button
+            onClick={() => setOpenEditModal(true)}
+            className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold"
+          >
+            ✏️ Chỉnh sửa
+          </button>
         </div>
 
-        {/* SECTIONS */}
+        {/* ===== SECTIONS ===== */}
         <div className="space-y-8">
           {sections.map((section) => (
-            <div
-              key={section.id}
-              className="bg-white rounded-3xl shadow-md overflow-hidden"
-            >
-              {/* SECTION HEADER */}
-              <div className="flex justify-between items-center px-8 py-6 bg-indigo-50">
+            <div key={section.id} className="bg-white rounded-3xl shadow">
+              <div className="flex justify-between items-center p-6 bg-indigo-50">
                 <div>
-                  <h2 className="text-xl font-bold">
-                    📘 {section.title}
-                  </h2>
+                  <h2 className="text-xl font-bold">📘 {section.title}</h2>
                   <p className="text-sm text-gray-500">
                     {section.lessons.length} bài học
                   </p>
                 </div>
-
                 <button
                   onClick={() => deleteSection(section.id)}
-                  className="w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-100"
-                  title="Xóa chương"
+                  className="text-red-600"
                 >
                   🗑
                 </button>
               </div>
 
-              {/* LESSONS */}
               <div className="p-6 space-y-4">
                 {section.lessons.map((lesson) => {
                   const hasContent =
@@ -185,98 +224,65 @@ export default function ManageAILessonsPage() {
                   return (
                     <div
                       key={lesson.id}
-                      className="bg-slate-50 rounded-2xl p-5 border"
+                      className="bg-slate-50 p-5 rounded-xl border"
                     >
-                      <div className="flex justify-between gap-4">
+                      <div className="flex justify-between">
                         <div>
-                          <p className="text-lg font-semibold">
-                            {lesson.title}
-                          </p>
+                          <p className="font-semibold">{lesson.title}</p>
                           <p className="text-sm text-gray-500">
                             ⏱ {lesson.duration}
                           </p>
-
-                          <span
-                            className={`inline-block mt-2 text-xs px-3 py-1 rounded-full ${
-                              hasContent
-                                ? "bg-green-50 text-green-600"
-                                : "bg-orange-50 text-orange-600"
-                            }`}
-                          >
-                            {hasContent
-                              ? "✅ Đã có nội dung"
-                              : "⚠️ Chưa có nội dung"}
-                          </span>
                         </div>
-
                         <button
                           onClick={() =>
                             deleteLesson(section.id, lesson.id)
                           }
-                          className="w-8 h-8 rounded-full bg-red-50 text-red-500"
-                          title="Xóa bài học"
+                          className="text-red-500"
                         >
                           ✕
                         </button>
                       </div>
 
-                      {/* UPLOAD */}
-                      <div className="mt-4 flex flex-wrap gap-3">
+                      <div className="mt-4 flex gap-3">
                         <select
-                          className="rounded-xl border px-4 py-2"
                           onChange={(e) =>
-                            (lesson._uploadType = e.target.value)
+                            (lesson._type = e.target.value)
                           }
+                          className="border rounded px-3 py-2"
                         >
-                          <option value="">Loại nội dung</option>
-                          <option value="video">🎥 Video</option>
-                          <option value="document">📄 Tài liệu</option>
+                          <option value="">Loại</option>
+                          <option value="video">Video</option>
+                          <option value="document">Tài liệu</option>
                         </select>
 
                         <input
                           type="file"
-                          className="rounded-xl border px-4 py-2"
                           onChange={(e) =>
                             (lesson._file = e.target.files[0])
                           }
                         />
 
                         <button
-                          disabled={uploadingLessonId === lesson.id}
                           onClick={() => {
-                            if (!lesson._file || !lesson._uploadType) {
-                              alert("⚠️ Chọn file và loại nội dung");
+                            if (!lesson._file || !lesson._type) {
+                              alert("Chọn file và loại");
                               return;
                             }
                             uploadLessonContent(
                               lesson.id,
                               lesson._file,
-                              lesson._uploadType
+                              lesson._type
                             );
                           }}
-                          className={`rounded-xl px-6 py-2 text-white font-semibold ${
-                            uploadingLessonId === lesson.id
-                              ? "bg-gray-400"
-                              : "bg-indigo-600 hover:bg-indigo-700"
-                          }`}
+                          className="bg-indigo-600 text-white px-4 rounded"
                         >
                           Upload
                         </button>
                       </div>
 
-                      {/* PROGRESS */}
                       {uploadingLessonId === lesson.id && (
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs mb-1">
-                            <span>Đang upload</span>
-                            <span>{uploadProgress}%</span>
-                          </div>
-                          <div className="w-full h-2 bg-gray-200 rounded-full">
-                            <div
-                              className="h-2 bg-indigo-600 rounded-full"
-                              style={{ width: `${uploadProgress}%` }}
-                            />
-                          </div>
+                        <div className="mt-2 text-sm">
+                          Đang upload: {uploadProgress}%
                         </div>
                       )}
                     </div>
@@ -287,6 +293,58 @@ export default function ManageAILessonsPage() {
           ))}
         </div>
       </div>
+
+      {/* ===== EDIT MODAL ===== */}
+      {openEditModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl w-full max-w-lg p-6 space-y-6">
+            <h2 className="text-xl font-bold">
+              Chỉnh sửa thông tin khóa học
+            </h2>
+
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Giá khóa học (VNĐ)"
+              className="w-full border px-4 py-2 rounded"
+            />
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                setThumbnailFile(e.target.files[0]);
+                setThumbnailPreview(
+                  URL.createObjectURL(e.target.files[0])
+                );
+              }}
+            />
+
+            {thumbnailPreview && (
+              <img
+                src={thumbnailPreview}
+                className="h-32 rounded object-cover"
+              />
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setOpenEditModal(false)}
+                className="border px-4 py-2 rounded"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={updateCourseInfo}
+                className="bg-indigo-600 text-white px-6 py-2 rounded"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

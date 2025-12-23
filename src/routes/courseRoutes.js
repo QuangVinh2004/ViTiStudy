@@ -10,9 +10,9 @@ import ManageLessonsPage from "../pages/courses/ManageLessonsPage";
 import CourseListPage from "../pages/courses/CourseListPage";
 const courseRoutes = [
   { path: '/course', element: <CoursePage /> },
-  { path: '/course/course-direction', element: <CourseDirection /> },
+  { path: '/course/checkout/:courseId', element: <CheckoutPage /> },
+  { path: '/course/course-direction/:courseId', element: <CourseDirection /> },
   { path: '/course/course-detail', element: <CourseDetail /> },
-  { path: '/course/course-detail/checkout', element: <CheckoutPage /> },
   { path: '/test/:examId', element: <TestPage /> },
   { path: '/test/:examId/result/:attemptId', element: <TestResultPage /> },
   { path: '/course/create-test', element: <CreateExam />, roles: ['teacher', 'admin'] },
