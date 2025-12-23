@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import api from "../../api/axios";
 import { AuthContext } from "../../context/AuthContext";
 
-function CreateCoursePage() {
+function CreateCourseManualPage() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -236,4 +236,4 @@ function CreateCoursePage() {
   );
 }
 
-export default CreateCoursePage;
+export default CreateCourseManualPage;

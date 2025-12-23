@@ -5,7 +5,7 @@ import CheckoutPage from '../pages/CheckoutPage';
 import TestPage from '../pages/test/TestPage';
 import TestResultPage from '../pages/test/TestResultPage';
 import CreateExam from '../pages/create_test/CreateExam';
-import CreateCoursePage from '../pages/courses/CreateCoursePage';
+import CreateCoursePage from '../pages/courses/CreateCourseManualPage';
 import ManageLessonsPage from "../pages/courses/ManageLessonsPage";
 import CourseListPage from "../pages/courses/CourseListPage";
 const courseRoutes = [
