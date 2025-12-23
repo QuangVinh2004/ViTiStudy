@@ -15,13 +15,13 @@ export default function TeacherCourseManagement() {
     if (!user?.id) return;
     setLoading(true);
     try {
-      const res = await api.get(`/courses/teacher/${user.id}`); 
+      const res = await api.get(`/courses/teacher/${user.id}`);
       // nếu API trả data như bạn mô tả, map sang trường hợp bạn cần
       const mapped = (res.data?.data || []).map((c) => ({
         id: c.id,
         title: c.title,
         description: c.description,
-        price: typeof c.price === "number" ? c.price : Number(c.price) || 0, 
+        price: typeof c.price === "number" ? c.price : Number(c.price) || 0,
         total_lessons: c.total_lessons || 0,
         level: c.level || "",
         cover_url: c.thumbnail || c.coverImage || "",
@@ -50,8 +50,9 @@ export default function TeacherCourseManagement() {
   };
 
   const handleUpdate = (id) => {
-    navigate(`/teacher/courses/update/${id}`);
+    navigate(`/teacher/manage-courses/${id}/lessons`);
   };
+
 
   const handleDelete = async (id) => {
     const c = courses.find((x) => x.id === id);
@@ -150,10 +151,10 @@ export default function TeacherCourseManagement() {
                     <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-semibold capitalize ${(course.level || "").toLowerCase() === "beginner"
-                            ? "bg-blue-100 text-blue-800"
-                            : (course.level || "").toLowerCase() === "intermediate"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-700"
+                          ? "bg-blue-100 text-blue-800"
+                          : (course.level || "").toLowerCase() === "intermediate"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-700"
                           }`}
                       >
                         {course.level}

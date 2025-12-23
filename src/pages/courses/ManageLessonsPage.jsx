@@ -10,12 +10,14 @@ function ManageLessonsPage() {
   const [loading, setLoading] = useState(true);
 
   const [newSectionTitle, setNewSectionTitle] = useState("");
-
-  // lessonInputs: title, type, duration cho mỗi section
   const [lessonInputs, setLessonInputs] = useState({});
 
+  // 👉 Upload state
+  const [uploadingSectionId, setUploadingSectionId] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   // ======================
-  // Cập nhật input field
+  // Update lesson input
   // ======================
   const updateLessonInput = (sectionId, field, value) => {
     setLessonInputs((prev) => ({
@@ -28,7 +30,7 @@ function ManageLessonsPage() {
   };
 
   // ======================
-  // Load course + sections
+  // Load data
   // ======================
   useEffect(() => {
     const fetchData = async () => {
@@ -52,11 +54,11 @@ function ManageLessonsPage() {
   }, [courseId]);
 
   // ======================
-  // Add Section
+  // Add section
   // ======================
   const addSection = async () => {
     if (!newSectionTitle.trim()) {
-      alert("⚠️ Vui lòng nhập tên phần");
+      alert("⚠️ Vui lòng nhập tên chương");
       return;
     }
 
@@ -69,28 +71,27 @@ function ManageLessonsPage() {
       setNewSectionTitle("");
     } catch (err) {
       console.error(err);
-      alert("❌ Lỗi khi thêm phần");
+      alert("❌ Lỗi khi thêm chương");
     }
   };
 
   // ======================
-  // Delete Section
+  // Delete section
   // ======================
   const deleteSection = async (sectionId) => {
-    if (!window.confirm("Xóa toàn bộ phần này?")) return;
+    if (!window.confirm("Xóa toàn bộ chương này?")) return;
 
     try {
       await api.delete(`/sections/${sectionId}`);
       setSections((prev) => prev.filter((s) => s.id !== sectionId));
     } catch (err) {
       console.error(err);
-      alert("❌ Lỗi khi xóa phần");
+      alert("❌ Lỗi khi xóa chương");
     }
   };
 
   // ======================
-  // Add Lesson
-  // Lấy file trực tiếp từ DOM input
+  // Add lesson (UPLOAD WITH PROGRESS)
   // ======================
   const addLesson = async (sectionId, e) => {
     const sectionDiv = e.target.closest(".section");
@@ -99,20 +100,21 @@ function ManageLessonsPage() {
 
     const lesson = lessonInputs[sectionId] || {};
 
-    // Kiểm tra field thiếu
-    const missingFields = [];
-    if (!lesson.title) missingFields.push("title");
-    if (!lesson.duration) missingFields.push("duration");
-    if (!lesson.type) missingFields.push("type"); // bắt buộc chọn
-    if (!file) missingFields.push("file");
+    const missing = [];
+    if (!lesson.title) missing.push("tiêu đề");
+    if (!lesson.duration) missing.push("thời lượng");
+    if (!lesson.type) missing.push("loại");
+    if (!file) missing.push("file");
 
-    if (missingFields.length > 0) {
-      console.log("⚠️ Thiếu thông tin bài học:", missingFields);
-      alert("⚠️ Thiếu thông tin: " + missingFields.join(", "));
+    if (missing.length) {
+      alert("⚠️ Thiếu: " + missing.join(", "));
       return;
     }
 
     try {
+      setUploadingSectionId(sectionId);
+      setUploadProgress(0);
+
       const formData = new FormData();
       formData.append("title", lesson.title);
       formData.append("type", lesson.type);
@@ -122,10 +124,15 @@ function ManageLessonsPage() {
       const { data } = await api.post(
         `/lessons/${sectionId}`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (e) => {
+            const percent = Math.round((e.loaded * 100) / e.total);
+            setUploadProgress(percent);
+          },
+        }
       );
 
-      // Update UI
       setSections((prev) =>
         prev.map((sec) =>
           sec.id === sectionId
@@ -134,26 +141,25 @@ function ManageLessonsPage() {
         )
       );
 
-      // Reset input state
       setLessonInputs((prev) => ({
         ...prev,
-        [sectionId]: {
-          title: "",
-          type: "", // reset để bắt buộc chọn lại
-          duration: "",
-        },
+        [sectionId]: { title: "", type: "", duration: "" },
       }));
 
-      // Reset file input
       if (fileInput) fileInput.value = "";
+
+      alert("✅ Thêm bài học thành công");
     } catch (err) {
       console.error(err);
-      alert("❌ Lỗi khi thêm bài học");
+      alert("❌ Upload thất bại");
+    } finally {
+      setUploadingSectionId(null);
+      setUploadProgress(0);
     }
   };
 
   // ======================
-  // Delete Lesson
+  // Delete lesson
   // ======================
   const deleteLesson = async (sectionId, lessonId) => {
     if (!window.confirm("Xóa bài học này?")) return;
@@ -177,156 +183,166 @@ function ManageLessonsPage() {
     }
   };
 
-  // ======================
-  // Loading
-  // ======================
   if (loading) {
-    return <p className="text-center py-20">Đang tải...</p>;
+    return <p className="text-center py-20">⏳ Đang tải dữ liệu...</p>;
   }
 
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4 space-y-10">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        {course?.thumbnail && (
-          <img
-            src={course.thumbnail}
-            alt="course"
-            className="w-20 h-20 rounded-xl object-cover"
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-10">
+
+        {/* HEADER */}
+        <div className="flex items-center gap-6 bg-white p-6 rounded-3xl shadow">
+          {course?.thumbnail && (
+            <img
+              src={course.thumbnail}
+              alt="course"
+              className="w-24 h-24 rounded-2xl object-cover shadow"
+            />
+          )}
+          <div>
+            <h1 className="text-3xl font-bold">{course?.title}</h1>
+            <p className="text-gray-500">
+              Quản lý chương & bài học
+            </p>
+          </div>
+        </div>
+
+        {/* ADD SECTION */}
+        <div className="bg-white p-6 rounded-3xl shadow flex gap-4">
+          <input
+            value={newSectionTitle}
+            onChange={(e) => setNewSectionTitle(e.target.value)}
+            placeholder="Nhập tên chương mới"
+            className="flex-1 px-4 py-3 border rounded-xl"
           />
-        )}
-        <h1 className="text-3xl font-bold">{course?.title}</h1>
-      </div>
+          <button
+            onClick={addSection}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold"
+          >
+            ➕ Thêm chương
+          </button>
+        </div>
 
-      {/* Add Section */}
-      <div className="flex gap-2">
-        <input
-          value={newSectionTitle}
-          onChange={(e) => setNewSectionTitle(e.target.value)}
-          placeholder="Tên phần mới"
-          className="p-3 border rounded-lg flex-1"
-        />
-        <button
-          onClick={addSection}
-          className="bg-green-600 text-white px-5 rounded-lg"
-        >
-          Thêm phần
-        </button>
-      </div>
+        {/* SECTIONS */}
+        <div className="space-y-8">
+          {sections.map((section) => {
+            const input = lessonInputs[section.id] || {
+              title: "",
+              type: "",
+              duration: "",
+            };
 
-      {/* Sections */}
-      <div className="space-y-8">
-        {sections.map((section) => {
-          // Khởi tạo input mặc định
-          const input = lessonInputs[section.id] || {
-            title: "",
-            type: "", // bắt buộc chọn
-            duration: "",
-          };
-
-          return (
-            <div key={section.id} className="section p-6 bg-white rounded-xl shadow">
-              {/* Section header */}
-              <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-bold">{section.title}</h2>
-                <button
-                  onClick={() => deleteSection(section.id)}
-                  className="text-red-500"
-                >
-                  Xóa phần
-                </button>
-              </div>
-
-              {/* Lessons list */}
-              <div className="space-y-3 mb-4">
-                {section.lessons.map((lesson) => (
-                  <div
-                    key={lesson.id}
-                    className="flex justify-between items-center bg-gray-100 p-3 rounded-lg"
+            return (
+              <div
+                key={section.id}
+                className="section bg-white rounded-3xl shadow border"
+              >
+                <div className="flex justify-between p-6 border-b">
+                  <h2 className="text-xl font-bold">{section.title}</h2>
+                  <button
+                    onClick={() => deleteSection(section.id)}
+                    className="w-10 h-10 rounded-full bg-red-50 text-red-600 hover:bg-red-100"
                   >
-                    <div>
-                      <p className="font-semibold">{lesson.title}</p>
-                      <p className="text-sm text-gray-500">
-                        {lesson.type} · {lesson.duration}
-                      </p>
+                    🗑
+                  </button>
+                </div>
 
-                      {lesson.file_url && lesson.type === "video" && (
-                        <video
-                          src={lesson.file_url}
-                          controls
-                          className="w-full h-40 mt-2 rounded-lg"
-                        />
-                      )}
-
-                      {lesson.file_url && lesson.type === "document" && (
-                        <a
-                          href={lesson.file_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-500 underline"
-                        >
-                          Tải tài liệu
-                        </a>
-                      )}
+                {/* LESSONS */}
+                <div className="p-6 space-y-3">
+                  {section.lessons.map((lesson) => (
+                    <div
+                      key={lesson.id}
+                      className="flex justify-between bg-slate-50 p-4 rounded-xl"
+                    >
+                      <div>
+                        <p className="font-semibold">{lesson.title}</p>
+                        <p className="text-sm text-gray-500">
+                          {lesson.type} · {lesson.duration}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() =>
+                          deleteLesson(section.id, lesson.id)
+                        }
+                        className="w-8 h-8 rounded-full bg-red-50 text-red-500"
+                      >
+                        ✕
+                      </button>
                     </div>
+                  ))}
+                </div>
+
+                {/* ADD LESSON */}
+                <div className="p-6 border-t bg-slate-50 rounded-b-3xl">
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
+                    <input
+                      placeholder="Tiêu đề"
+                      value={input.title}
+                      onChange={(e) =>
+                        updateLessonInput(section.id, "title", e.target.value)
+                      }
+                      className="md:col-span-2 px-3 py-2 border rounded-lg"
+                    />
+
+                    <select
+                      value={input.type}
+                      onChange={(e) =>
+                        updateLessonInput(section.id, "type", e.target.value)
+                      }
+                      className="px-3 py-2 border rounded-lg"
+                    >
+                      <option value="">Loại</option>
+                      <option value="video">Video</option>
+                      <option value="document">Tài liệu</option>
+                    </select>
+
+                    <input
+                      placeholder="Thời lượng"
+                      value={input.duration}
+                      onChange={(e) =>
+                        updateLessonInput(section.id, "duration", e.target.value)
+                      }
+                      className="px-3 py-2 border rounded-lg"
+                    />
+
+                    <input type="file" className="px-3 py-2 border rounded-lg" />
 
                     <button
-                      onClick={() =>
-                        deleteLesson(section.id, lesson.id)
-                      }
-                      className="text-red-500"
+                      onClick={(e) => addLesson(section.id, e)}
+                      disabled={uploadingSectionId === section.id}
+                      className={`rounded-lg font-semibold text-white ${
+                        uploadingSectionId === section.id
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-indigo-600 hover:bg-indigo-700"
+                      }`}
                     >
-                      Xóa
+                      {uploadingSectionId === section.id
+                        ? "Đang tải..."
+                        : "Thêm"}
                     </button>
                   </div>
-                ))}
+
+                  {/* PROGRESS BAR */}
+                  {uploadingSectionId === section.id && (
+                    <div className="mt-4">
+                      <div className="flex justify-between text-sm text-gray-600 mb-1">
+                        <span>Đang tải video...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-indigo-600 h-2 rounded-full transition-all"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-
-              {/* Add lesson */}
-              <div className="flex gap-2 flex-wrap">
-                <input
-                  placeholder="Tiêu đề"
-                  value={input.title}
-                  onChange={(e) =>
-                    updateLessonInput(section.id, "title", e.target.value)
-                  }
-                  className="p-2 border rounded flex-1"
-                />
-
-                {/* Drop-down select cho type */}
-                <select
-                  value={input.type}
-                  onChange={(e) =>
-                    updateLessonInput(section.id, "type", e.target.value)
-                  }
-                  className="p-2 border rounded"
-                >
-                  <option value="">-- Chọn loại --</option>  {/* bắt buộc chọn */}
-                  <option value="video">Video</option>
-                  <option value="document">Document</option>
-                </select>
-
-                <input
-                  placeholder="Thời lượng"
-                  value={input.duration}
-                  onChange={(e) =>
-                    updateLessonInput(section.id, "duration", e.target.value)
-                  }
-                  className="p-2 border rounded w-32"
-                />
-
-                <input type="file" className="p-2 border rounded" />
-
-                <button
-                  onClick={(e) => addLesson(section.id, e)}
-                  className="bg-blue-600 text-white px-4 rounded"
-                >
-                  Thêm
-                </button>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
