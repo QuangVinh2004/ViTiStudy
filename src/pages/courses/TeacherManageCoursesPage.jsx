@@ -53,6 +53,9 @@ export default function TeacherCourseManagement() {
     navigate(`/teacher/manage-courses/${id}/lessons`);
   };
 
+  const handleCreateExam = (id) => {
+    navigate(`/course/create-test`, { state: { courseId: id } });
+  };
 
   const handleDelete = async (id) => {
     const c = courses.find((x) => x.id === id);
@@ -164,7 +167,7 @@ export default function TeacherCourseManagement() {
                     <td className="p-4 text-gray-600">📖 {course.total_lessons} lessons</td>
 
                     <td className="p-4">
-                      <div className="flex gap-2 flex-wrap">
+                      <div className="grid grid-cols-2 gap-2">
                         <button
                           onClick={() => handleView(course.id)}
                           className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm shadow"
@@ -185,7 +188,15 @@ export default function TeacherCourseManagement() {
                         >
                           Delete
                         </button>
+
+                        <button
+                          onClick={() => handleCreateExam(course.id)}
+                          className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm shadow"
+                        >
+                          Create Exam
+                        </button>
                       </div>
+
                     </td>
                   </tr>
                 ))

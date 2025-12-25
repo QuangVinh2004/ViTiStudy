@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
 export default function ManageAILessonsPage() {
   const { courseId } = useParams();
+  const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
   const [sections, setSections] = useState([]);
@@ -291,6 +292,16 @@ export default function ManageAILessonsPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* ===== COMPLETE BUTTON ===== */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => navigate('/teacher/manage-courses')}
+            className="bg-blue-300 hover:bg-blue-400 text-white px-8 py-3 rounded-xl font-semibold text-lg shadow-lg transition-colors"
+          >
+            ✅ Hoàn tất
+          </button>
         </div>
       </div>
 

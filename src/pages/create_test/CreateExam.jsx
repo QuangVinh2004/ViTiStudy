@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useExamState } from "./useExamState";
 import ExamBasicInfo from "./components/ExamBasicInfo";
@@ -10,6 +11,9 @@ import AIExamCreator from "./components/AIExamCreator";
 export default function CreateExam() {
   const [loading, setLoading] = useState(false);
   const [createMethod, setCreateMethod] = useState(null); // null | "manual" | "ai"
+  const location = useLocation();
+  const navigate = useNavigate();
+  const courseId = location.state?.courseId;
 
   const {
     exam,
@@ -33,6 +37,7 @@ export default function CreateExam() {
     const { id: examId, sections, ...restExam } = exam;
     const payload = {
       ...restExam,
+      course_id: courseId,
       sections: sections.map((section) => {
         const { id: secId, questions, ...restSection } = section;
         return {
@@ -59,6 +64,7 @@ export default function CreateExam() {
       if (response.status === 200 || response.status === 201) {
         alert("🎉 Tạo bài kiểm tra thành công!");
         console.log("Response data:", response.data);
+        navigate("/teacher/manage-courses");
       }
     } catch (error) {
       console.error("Lỗi khi tạo bài kiểm tra:", error);
@@ -91,7 +97,7 @@ export default function CreateExam() {
 
   // Hiển thị giao diện tạo bằng AI
   if (createMethod === "ai") {
-    return <AIExamCreator onBack={handleBack} onExamGenerated={handleExamGenerated} />;
+    return <AIExamCreator onBack={handleBack} onExamGenerated={handleExamGenerated} courseId={courseId} />;
   }
 
   return (

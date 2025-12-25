@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios";
 import { useExamState } from "../useExamState";
 import ExamBasicInfo from "./ExamBasicInfo";
 import Section from "./Section";
 import { convertEditableToBackend } from "../utils/examConverter";
 
-export default function AIExamEditor({ initialExam, onBack, onSaved }) {
+export default function AIExamEditor({ initialExam, onBack, onSaved, courseId }) {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Sử dụng custom hook với initial data từ AI
   const {
@@ -29,7 +31,10 @@ export default function AIExamEditor({ initialExam, onBack, onSaved }) {
     setLoading(true);
 
     // Convert về format backend
-    const payload = convertEditableToBackend(exam);
+    const payload = {
+      ...convertEditableToBackend(exam),
+      course_id: courseId
+    };
 
     console.log("Sending AI-edited exam:", payload);
     console.log("Original exam duration:", exam.duration); // Debug log
@@ -45,6 +50,7 @@ export default function AIExamEditor({ initialExam, onBack, onSaved }) {
         if (onSaved) {
           onSaved(response.data);
         }
+        navigate("/teacher/manage-courses");
       }
     } catch (error) {
       console.error("Lỗi khi lưu đề kiểm tra:", error);

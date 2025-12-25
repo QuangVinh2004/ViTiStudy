@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../../api/axios";
 import { useExamState } from "../useExamState";
 import ExamBasicInfo from "./ExamBasicInfo";
@@ -6,6 +7,7 @@ import Section from "./Section";
 
 export default function ManualExamCreator({ onBack }) {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const {
     exam,
@@ -55,6 +57,7 @@ export default function ManualExamCreator({ onBack }) {
       if (response.status === 200 || response.status === 201) {
         alert("🎉 Tạo bài kiểm tra thành công!");
         console.log("Response data:", response.data);
+        navigate("/teacher/manage-courses");
       }
     } catch (error) {
       console.error("Lỗi khi tạo bài kiểm tra:", error);

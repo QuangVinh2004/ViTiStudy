@@ -7,8 +7,7 @@ const adminMenu = [
   { label: "Quản lý Khóa học", icon: "📚", link: "/teacher/manage-courses" },
   { label: "Bài tập", icon: "📝", link: "/teacher/exercises" },
   { label: "Học sinh", icon: "👨‍🎓", link: "/teacher/students" },
-  { label: "Phân tích", icon: "📊", link: "/teacher/analytics" },
-  { label: "Cài đặt", icon: "⚙️", link: "/teacher/settings" },
+  { label: "Trang cá nhân", icon: "👤", link: "/teacher/settings" },
 ];
 
 export default function TeacherSidebar() {

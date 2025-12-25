@@ -3,7 +3,7 @@ import api from "../../../api/axios";
 import { convertAIExamToEditable } from "../utils/examConverter";
 import AIExamEditor from "./AIExamEditor";
 
-export default function AIExamCreator({ onBack, onExamGenerated }) {
+export default function AIExamCreator({ onBack, onExamGenerated, courseId }) {
   const [loading, setLoading] = useState(false);
   const [generatedExam, setGeneratedExam] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -71,6 +71,7 @@ export default function AIExamCreator({ onBack, onExamGenerated }) {
         initialExam={editableExam}
         onBack={handleBackToPreview}
         onSaved={handleSaved}
+        courseId={courseId}
       />
     );
   }

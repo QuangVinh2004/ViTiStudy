@@ -1,56 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../../api/axios';
 
 export default function CourseManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState('');
 
-  // Mock data
-  const courses = [
-    { 
-      id: 1, 
-      title: 'Toán 12 - Nâng cao', 
-      teacher: 'Thầy Nam', 
-      students: 450, 
-      price: 500000, 
-      status: 'active',
-      thumbnail: 'https://via.placeholder.com/100x60?text=Toán',
-      created_at: '2025-01-10'
-    },
-    { 
-      id: 2, 
-      title: 'Vật Lý 12 - Cơ bản', 
-      teacher: 'Cô Lan', 
-      students: 380, 
-      price: 450000, 
-      status: 'active',
-      thumbnail: 'https://via.placeholder.com/100x60?text=Lý',
-      created_at: '2025-01-15'
-    },
-    { 
-      id: 3, 
-      title: 'Hóa học 12 - Nâng cao', 
-      teacher: 'Cô Hương', 
-      students: 320, 
-      price: 550000, 
-      status: 'draft',
-      thumbnail: 'https://via.placeholder.com/100x60?text=Hóa',
-      created_at: '2025-02-01'
-    },
-    { 
-      id: 4, 
-      title: 'Tiếng Anh 12 - IELTS', 
-      teacher: 'Cô Mai', 
-      students: 280, 
-      price: 800000, 
-      status: 'active',
-      thumbnail: 'https://via.placeholder.com/100x60?text=Anh',
-      created_at: '2025-02-05'
-    },
-  ];
+  // Fetch courses from API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get('/courses');
+        setCourses(response.data.data || []);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+        setCourses([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(''), 2500);
+  };
+
+  const handleDelete = async (id) => {
+    const course = courses.find((c) => c.id === id);
+    if (!course) return;
+    
+    if (!window.confirm(`Bạn có chắc muốn xóa khóa học "${course.title}"?`)) return;
+
+    try {
+      const res = await api.delete(`/courses/${id}`);
+      if (res.data?.success === false) {
+        showToast('Xóa thất bại');
+        return;
+      }
+      setCourses((prev) => prev.filter((item) => item.id !== id));
+      showToast(`Đã xóa: ${course.title}`);
+    } catch (err) {
+      console.error(err);
+      showToast('Xóa thất bại');
+    }
+  };
 
   const filteredCourses = courses.filter(course => {
+    const teacherName = course.teacher_name || course.teacher || '';
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         course.teacher.toLowerCase().includes(searchQuery.toLowerCase());
+                         teacherName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || course.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -72,6 +76,12 @@ export default function CourseManagement() {
         </button>
       </div>
 
+      {loading ? (
+        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+          <p className="text-gray-500">Đang tải khóa học...</p>
+        </div>
+      ) : (
+        <>
       {/* Filters */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
@@ -124,12 +134,12 @@ export default function CourseManagement() {
                 </div>
                 <div className="text-sm text-gray-600 mb-3">
                   <i className="fa-solid fa-chalkboard-user mr-2"></i>
-                  {course.teacher}
+                  {course.teacher_name || course.teacher || 'Chưa có giáo viên'}
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-1 text-gray-600">
                     <i className="fa-solid fa-user-graduate"></i>
-                    <span>{course.students} học viên</span>
+                    <span>{course.students || course.total_students || 0} học viên</span>
                   </div>
                   <div className="flex items-center gap-1 text-green-600 font-semibold">
                     <i className="fa-solid fa-tag"></i>
@@ -152,7 +162,10 @@ export default function CourseManagement() {
                   <i className="fa-solid fa-pen-to-square mr-1"></i>
                   Sửa
                 </button>
-                <button className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium transition-colors">
+                <button 
+                  onClick={() => handleDelete(course.id)}
+                  className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium transition-colors"
+                >
                   <i className="fa-solid fa-trash mr-1"></i>
                   Xóa
                 </button>
@@ -168,6 +181,15 @@ export default function CourseManagement() {
           <i className="fa-solid fa-book-open-reader text-6xl text-gray-300 mb-4"></i>
           <h3 className="text-xl font-semibold text-gray-600 mb-2">Không tìm thấy khóa học</h3>
           <p className="text-gray-500">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
+        </div>
+      )}
+      </>
+      )}
+
+      {/* TOAST */}
+      {toast && (
+        <div className="fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg z-50">
+          {toast}
         </div>
       )}
     </div>

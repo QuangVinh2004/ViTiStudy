@@ -1,6 +1,9 @@
 import TeacherLayout from "../components/layouts/TeacherLayout";
 import TeacherPage from "../pages/teacher/TeacherPage";
 import TeacherManageCoursesPage from "../pages/courses/TeacherManageCoursesPage";
+import StudentManagement from "../pages/teacher/StudentManagement";
+import ExamManagement from "../pages/teacher/ExamManagement";
+import ProfileContent from "../pages/student/ProfileContent";
 import ManageLessonsPage from "../pages/courses/ManageLessonsPage";
 import CourseDetail from "../pages/courses/CourseDetail";
 import ManageAILessonsPage from "../pages/courses/ManageAILessonsPage";
@@ -25,6 +28,9 @@ const teacherRoutes = [
       { path: "manage-courses/:courseId/lessons", element: <ManageLessonsPage /> },
       { path: "manage-courses/:courseId/lessons-ai", element: <ManageAILessonsPage /> },
       { path: "manage-courses/:courseId/detail", element: <CourseDetail /> },
+      { path: "exercises", element: <ExamManagement /> },
+      { path: "students", element: <StudentManagement /> },
+      { path: "settings", element: <ProfileContent /> },
     ],
   },
 ];
